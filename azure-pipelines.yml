@@ -90,7 +90,6 @@ stages:
   jobs:
   - deployment: DeployReactApp
     displayName: Deploy React Frontend
-    environment: 'production'
     strategy:
       runOnce:
         deploy:
@@ -107,7 +106,6 @@ stages:
 
   - deployment: DeployDotNetApi
     displayName: Deploy .NET Backend
-    environment: 'production'
     pool:
       vmImage: 'windows-latest'
     strategy:
