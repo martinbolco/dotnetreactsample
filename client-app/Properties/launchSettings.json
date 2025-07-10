@@ -1,0 +1,10 @@
+﻿{
+	"profiles": {
+		"ReactApp": {
+			"commandName": "Executable",
+			"executablePath": "cmd.exe",
+			"workingDirectory": "my-react-app",
+			"commandLineArgs": "/c npm start"
+		}
+	}
+}
