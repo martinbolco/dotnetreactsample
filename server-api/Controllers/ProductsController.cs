@@ -55,17 +55,18 @@ namespace server_api.Controllers
 		public async Task<IActionResult> UpdateProduct(int id, Product updatedProduct)
 		{
 			if (id != updatedProduct.Id)
-			{ 
+			{
 				return BadRequest();
 			}
 
 			var success = await _productService.UpdateProductAsync(id, updatedProduct);
 			if (!success)
-			{ 
+			{
 				return NotFound();
 			}
 
-			return NoContent();
+			// Return the updated product
+			return Ok(updatedProduct); // 200 with body
 		}
 
 		// DELETE: api/products/5
