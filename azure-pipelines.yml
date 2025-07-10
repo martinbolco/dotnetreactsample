@@ -88,8 +88,9 @@ stages:
   displayName: Deploy to Azure
   dependsOn: Build
   jobs:
-  - job: DeployReactApp
+  - deployment: DeployReactApp
     displayName: Deploy React Frontend
+    environment: 'devtest'
     strategy:
       runOnce:
         deploy:
@@ -104,8 +105,9 @@ stages:
               appName: 'client-app'
               package: '$(Pipeline.Workspace)/client-app/client-app.zip'
 
-  - job: DeployDotNetApi
+  - deployment: DeployDotNetApi
     displayName: Deploy .NET Backend
+    environment: 'devtest'
     pool:
       vmImage: 'windows-latest'
     strategy:
