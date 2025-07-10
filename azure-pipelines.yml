@@ -7,28 +7,119 @@ trigger:
 - main
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'ubuntu-latest'
 
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  reactAppPath: 'client-app'
+  dotnetAppPath: 'server-api'
+  reactBuildDir: 'frontend/build'
+  dotnetPublishDir: '$(Build.ArtifactStagingDirectory)/backend-publish'
+  configuration: 'Release'
 
-steps:
-- task: NuGetToolInstaller@1
+stages:
+# ----------------------------
+# Stage 1: Build
+# ----------------------------
+- stage: Build
+  displayName: Build Frontend and Backend
+  jobs:
+  - job: BuildReact
+    displayName: Build React Frontend
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '18.x'
+      displayName: 'Install Node.js'
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
+    - script: |
+        cd $(reactAppPath)
+        npm ci
+        npm run build
+      displayName: 'Build React App'
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: '$(reactBuildDir)'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/client-app.zip'
+        replaceExistingArchive: true
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/client-app.zip'
+        ArtifactName: 'client-app'
+        publishLocation: 'Container'
+
+  - job: BuildDotNet
+    displayName: Build .NET Backend
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - task: UseDotNet@2
+      inputs:
+        packageType: 'sdk'
+        version: '8.x.x'
+        installationPath: $(Agent.ToolsDirectory)/dotnet
+
+    - task: NuGetToolInstaller@1
+
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '**/*.sln'
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'publish'
+        publishWebProjects: true
+        arguments: '--configuration $(configuration) --output $(dotnetPublishDir)'
+        zipAfterPublish: true
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(dotnetPublishDir)'
+        ArtifactName: 'server-api'
+        publishLocation: 'Container'
+
+# ----------------------------
+# Stage 2: Deploy
+# ----------------------------
+- stage: Deploy
+  displayName: Deploy to Azure
+  dependsOn: Build
+  jobs:
+  - deployment: DeployReactApp
+    displayName: Deploy React Frontend
+    environment: 'production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: client-app
+
+          - task: AzureWebApp@1
+            inputs:
+              azureSubscription: 'dotnetreactsampleserviceconnection'
+              appType: 'webApp'
+              appName: 'client-app'
+              package: '$(Pipeline.Workspace)/client-app/client-app.zip'
+
+  - deployment: DeployDotNetApi
+    displayName: Deploy .NET Backend
+    environment: 'production'
+    pool:
+      vmImage: 'windows-latest'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: server-api
+
+          - task: AzureWebApp@1
+            inputs:
+              azureSubscription: 'dotnetreactsampleserviceconnection'
+              appType: 'webApp'
+              appName: 'server-api'
+              package: '$(Pipeline.Workspace)/server-api/*.zip'
