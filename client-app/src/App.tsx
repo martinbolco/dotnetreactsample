@@ -1,53 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import { useMsal, useIsAuthenticated } from '@azure/msal-react';
-import { loginRequest } from './authConfig';
-
-interface Product {
-    name: string;
-}
-
+import React, { useEffect, useState } from "react";
+import { useMsal, useIsAuthenticated } from "@azure/msal-react";
+import { loginRequest } from "./authConfig";
+import { fetchProducts } from "./services/productService";
 
 function App() {
     const { instance, inProgress } = useMsal();
     const isAuthenticated = useIsAuthenticated();
-    const [products, setProducts] = useState<Product[]>([]);
+    const [products, setProducts] = useState<any[]>([]);
 
     useEffect(() => {
-        if (!isAuthenticated && inProgress === 'none') {
-            instance.loginPopup(loginRequest).catch(e => {
+        if (!isAuthenticated && inProgress === "none") {
+            instance.loginPopup(loginRequest).catch((e) => {
                 console.error(e);
             });
         }
     }, [isAuthenticated, inProgress, instance]);
 
     useEffect(() => {
-        const fetchData = async () => {
+        const loadProducts = async () => {
             try {
                 const account = instance.getAllAccounts()[0];
                 if (!account) return;
 
-                const response = await instance.acquireTokenSilent({
-                    ...loginRequest,
-                    account,
-                });
-
-                const token = response.accessToken;
-
-                const apiResponse = await fetch('https://localhost:7062/api/products', {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
-                const data = await apiResponse.json();
-                setProducts(data);
+                const products = await fetchProducts(instance, account);
+                setProducts(products);
             } catch (err) {
-                console.error('Error fetching products', err);
+                console.error("Error loading products:", err);
             }
         };
 
-        if (isAuthenticated && inProgress === 'none') {
-            fetchData();
+        if (isAuthenticated && inProgress === "none") {
+            loadProducts();
         }
     }, [isAuthenticated, inProgress, instance]);
 
