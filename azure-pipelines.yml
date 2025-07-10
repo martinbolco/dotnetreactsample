@@ -12,7 +12,7 @@ pool:
 variables:
   reactAppPath: 'client-app'
   dotnetAppPath: 'server-api'
-  reactBuildDir: 'frontend/build'
+  reactBuildDir: 'client-app/build'
   dotnetPublishDir: '$(Build.ArtifactStagingDirectory)/backend-publish'
   configuration: 'Release'
 
