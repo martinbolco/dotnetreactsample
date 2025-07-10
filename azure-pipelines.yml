@@ -100,7 +100,7 @@ stages:
 
           - task: AzureWebApp@1
             inputs:
-              azureSubscription: 'dotnetreactsampleserviceconnection'
+              azureSubscription: 'azureconnection'
               appType: 'webApp'
               appName: 'client-app'
               package: '$(Pipeline.Workspace)/client-app/client-app.zip'
@@ -119,7 +119,7 @@ stages:
 
           - task: AzureWebApp@1
             inputs:
-              azureSubscription: 'dotnetreactsampleserviceconnection'
+              azureSubscription: 'azureconnection'
               appType: 'webApp'
               appName: 'server-api'
               package: '$(Pipeline.Workspace)/server-api/*.zip'
