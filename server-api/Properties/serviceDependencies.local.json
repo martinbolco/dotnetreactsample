@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "identityapp1": {
+      "connectionInfo": "App registration: reactdotnetsampleappregistration, Tenant: Default Directory (baki32gmail.onmicrosoft.com - Microsoft Entra ID)",
+      "type": "identityapp.default"
+    }
+  }
+}
