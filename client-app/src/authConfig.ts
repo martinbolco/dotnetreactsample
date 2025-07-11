@@ -2,7 +2,7 @@
     auth: {
         clientId: "1c936d23-884d-4dd3-81ff-67a4b19415f1",
         authority: "https://login.microsoftonline.com/cf9a707a-0335-48f2-b7d0-5bb01b8b4a94",
-        redirectUri: "http://localhost:3000",
+        redirectUri: "https://client-app-ekcjfdadffgxc4be.westeurope-01.azurewebsites.net",
     },
 };
 
