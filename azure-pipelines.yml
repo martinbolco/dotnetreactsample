@@ -131,16 +131,16 @@ stages:
           - task: AzureAppServiceSettings@1
             displayName: 'Configure App Settings for .NET API'
             inputs:
-            azureSubscription: 'azureconnection'
-            appName: 'server-api'
-            appSettings: |
-                -AZUREAD__INSTANCE $(AZUREAD__INSTANCE)
-                -AZUREAD__DOMAIN $(AZUREAD__DOMAIN)
-                -AZUREAD__TENANTID $(AZUREAD__TENANTID)
-                -AZUREAD__CLIENTID $(AZUREAD__CLIENTID)
-                -AZUREAD__CALLBACKPATH $(AZUREAD__CALLBACKPATH)
-                -AZUREAD__SCOPES $(AZUREAD__SCOPES)
-                -ConnectionStrings__DefaultConnection $(ConnectionStrings__DefaultConnection)
+                azureSubscription: 'azureconnection'
+                appName: 'server-api'
+                appSettings: |
+                    -AZUREAD__INSTANCE $(AZUREAD__INSTANCE)
+                    -AZUREAD__DOMAIN $(AZUREAD__DOMAIN)
+                    -AZUREAD__TENANTID $(AZUREAD__TENANTID)
+                    -AZUREAD__CLIENTID $(AZUREAD__CLIENTID)
+                    -AZUREAD__CALLBACKPATH $(AZUREAD__CALLBACKPATH)
+                    -AZUREAD__SCOPES $(AZUREAD__SCOPES)
+                    -ConnectionStrings__DefaultConnection $(ConnectionStrings__DefaultConnection)
 
           - task: AzureWebApp@1
             inputs:
