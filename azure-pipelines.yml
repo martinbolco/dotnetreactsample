@@ -21,6 +21,8 @@ stages:
 # Stage 1: Build
 # ----------------------------
 - stage: Build
+  variables:
+  - group: devtest
   displayName: Build Frontend and Backend
   jobs:
   - job: BuildReact
@@ -32,9 +34,16 @@ stages:
       displayName: 'Install Node.js'
 
     - script: |
-        cd $(reactAppPath)
-        npm ci
+        echo "Building React..."
+        npm install
         npm run build
+      workingDirectory: ./client-app
+      env:
+        REACT_APP_API_URL: $(REACT_APP_API_URL)
+        REACT_APP_CLIENT_ID: $(REACT_APP_CLIENT_ID)
+        REACT_APP_AUTHORITY: $(REACT_APP_AUTHORITY)
+        REACT_APP_REDIRECT_URI: $(REACT_APP_REDIRECT_URI)
+        REACT_APP_LOGIN_REQUEST_SCOPE: $(REACT_APP_LOGIN_REQUEST_SCOPE)
       displayName: 'Build React App'
 
     - task: ArchiveFiles@2
@@ -85,6 +94,8 @@ stages:
 # Stage 2: Deploy
 # ----------------------------
 - stage: Deploy
+  variables:
+  - group: devtest
   displayName: Deploy to Azure
   dependsOn: Build
   jobs:
@@ -116,6 +127,20 @@ stages:
           steps:
           - download: current
             artifact: server-api
+
+          - task: AzureAppServiceSettings@1
+            displayName: 'Configure App Settings for .NET API'
+            inputs:
+            azureSubscription: '<your-service-connection>'
+            appName: '<your-api-app-service-name>'
+            appSettings: |
+                -AZUREAD__INSTANCE $(AZUREAD__INSTANCE)
+                -AZUREAD__DOMAIN $(AZUREAD__DOMAIN)
+                -AZUREAD__TENANTID $(AZUREAD__TENANTID)
+                -AZUREAD__CLIENTID $(AZUREAD__CLIENTID)
+                -AZUREAD__CALLBACKPATH $(AZUREAD__CALLBACKPATH)
+                -AZUREAD__SCOPES $(AZUREAD__SCOPES)
+                -ConnectionStrings__DefaultConnection $(ConnectionStrings__DefaultConnection)
 
           - task: AzureWebApp@1
             inputs:

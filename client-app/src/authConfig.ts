@@ -1,11 +1,11 @@
 ﻿export const msalConfig = {
     auth: {
-        clientId: "1c936d23-884d-4dd3-81ff-67a4b19415f1",
-        authority: "https://login.microsoftonline.com/cf9a707a-0335-48f2-b7d0-5bb01b8b4a94",
-        redirectUri: "https://client-app-ekcjfdadffgxc4be.westeurope-01.azurewebsites.net",
+        clientId: process.env.REACT_APP_CLIENT_ID!,
+        authority: process.env.REACT_APP_AUTHORITY!,
+        redirectUri: process.env.REACT_APP_REDIRECT_URI!,
     },
 };
 
 export const loginRequest = {
-    scopes: ["api://930bcc28-5810-49a6-ace5-eac0b2b0942b/access_as_user"],
+    scopes: [process.env.REACT_APP_LOGIN_REQUEST_SCOPE!],
 };
