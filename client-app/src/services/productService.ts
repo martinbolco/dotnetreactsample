@@ -1,7 +1,7 @@
 ﻿import { AccountInfo, IPublicClientApplication } from "@azure/msal-browser";
 import { loginRequest } from "../authConfig";
 
-const API_URL = "https://localhost:7062/api/products";
+const API_URL = "https://server-api-b6hrd3ana2bafxax.westeurope-01.azurewebsites.net/api/products";
 
 export const fetchProducts = async (
     msalInstance: IPublicClientApplication,
