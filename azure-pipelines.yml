@@ -131,8 +131,8 @@ stages:
           - task: AzureAppServiceSettings@1
             displayName: 'Configure App Settings for .NET API'
             inputs:
-            azureSubscription: '<your-service-connection>'
-            appName: '<your-api-app-service-name>'
+            azureSubscription: 'azureconnection'
+            appName: 'server-api'
             appSettings: |
                 -AZUREAD__INSTANCE $(AZUREAD__INSTANCE)
                 -AZUREAD__DOMAIN $(AZUREAD__DOMAIN)
