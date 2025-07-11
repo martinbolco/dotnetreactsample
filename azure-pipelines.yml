@@ -21,6 +21,8 @@ stages:
 # Stage 1: Build
 # ----------------------------
 - stage: Build
+  variables:
+  - group: reactdevtest
   displayName: Build Frontend and Backend
   jobs:
   - job: BuildReact
@@ -32,9 +34,16 @@ stages:
       displayName: 'Install Node.js'
 
     - script: |
-        cd $(reactAppPath)
-        npm ci
+        echo "Building React..."
+        npm install
         npm run build
+      workingDirectory: ./client-app
+      env:
+        REACT_APP_API_URL: $(REACT_APP_API_URL)
+        REACT_APP_CLIENT_ID: $(REACT_APP_CLIENT_ID)
+        REACT_APP_AUTHORITY: $(REACT_APP_AUTHORITY)
+        REACT_APP_REDIRECT_URI: $(REACT_APP_REDIRECT_URI)
+        REACT_APP_LOGIN_REQUEST_SCOPE: $(REACT_APP_LOGIN_REQUEST_SCOPE)
       displayName: 'Build React App'
 
     - task: ArchiveFiles@2
