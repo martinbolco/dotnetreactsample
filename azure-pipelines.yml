@@ -82,7 +82,7 @@ stages:
       inputs:
         command: 'test'
         projects: '**/*Tests.csproj'
-        arguments: '--configuration $(configuration) --no-build --verbosity normal'
+        arguments: '--configuration $(configuration) --verbosity detailed'
         publishTestResults: true
 
     - task: DotNetCoreCLI@2
