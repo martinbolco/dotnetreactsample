@@ -20,10 +20,28 @@ export const fetchProducts = async (
     return await res.json();
 };
 
+export const fetchProduct = async (
+    msalInstance: IPublicClientApplication,
+    account: AccountInfo,
+    id: number
+): Promise<any> => {
+    const response = await msalInstance.acquireTokenSilent({ ...loginRequest, account });
+    const token = response.accessToken;
+
+    const res = await fetch(`${API_URL}/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!res.ok) {
+        throw new Error("Failed to fetch products");
+    }
+    return await res.json();
+};
+
 export const addProduct = async (
     msalInstance: IPublicClientApplication,
     account: AccountInfo,
-    product: { name: string; description: string }
+    product: { name: string; price: number; description: string }
 ) => {
     const response = await msalInstance.acquireTokenSilent({ ...loginRequest, account });
     const token = response.accessToken;
@@ -47,7 +65,7 @@ export const addProduct = async (
 export const updateProduct = async (
     msalInstance: IPublicClientApplication,
     account: AccountInfo,
-    product: { id: number; name: string; description: string }
+    product: { id: number; name: string; price: number; description: string }
 ) => {
     const response = await msalInstance.acquireTokenSilent({ ...loginRequest, account });
     const token = response.accessToken;

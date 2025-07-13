@@ -24,7 +24,7 @@ namespace server_api.Tests
         public async Task GetProductsAsync_ReturnsAllProducts()
         {
             // Arrange
-            var expected = new List<Product> { new() { Id = 1, Name = "Test", Description = "Test Description" } };
+            var expected = new List<Product> { new() { Id = 1, Name = "Test", Price = 10.0, Description = "Test Description" } };
             _repoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(expected);
 
             // Act
@@ -38,7 +38,7 @@ namespace server_api.Tests
         public async Task GetProductAsync_WithValidId_ReturnsProduct()
         {
             // Arrange
-            var product = new Product { Id = 1, Name = "Test", Description = "Test Description" };
+            var product = new Product { Id = 1, Name = "Test", Price = 10.0, Description = "Test Description" };
             _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(product);
 
             // Act
@@ -52,7 +52,7 @@ namespace server_api.Tests
         public async Task CreateProductAsync_AddsProductAndSaves()
         {
             // Arrange
-            var product = new Product { Id = 1, Name = "New", Description = "Test Description" };
+            var product = new Product { Id = 1, Name = "New", Price = 10.0, Description = "Test Description" };
 
             // Act
             var result = await _service.CreateProductAsync(product);
@@ -66,7 +66,7 @@ namespace server_api.Tests
         [Fact]
         public async Task UpdateProductAsync_WithMismatchedId_ReturnsFalse()
         {
-            var updated = new Product { Id = 2, Name = "X", Description = "Test Description" };
+            var updated = new Product { Id = 2, Name = "X", Price = 10.0, Description = "Test Description" };
             var result = await _service.UpdateProductAsync(1, updated);
             Assert.False(result);
         }
@@ -74,7 +74,7 @@ namespace server_api.Tests
         [Fact]
         public async Task UpdateProductAsync_WithValidId_UpdatesProduct()
         {
-            var updated = new Product { Id = 1, Name = "X", Description = "Test Description" };
+            var updated = new Product { Id = 1, Name = "X", Price = 10.0, Description = "Test Description" };
 
             var result = await _service.UpdateProductAsync(1, updated);
 
@@ -96,7 +96,7 @@ namespace server_api.Tests
         [Fact]
         public async Task DeleteProductAsync_WithValidProduct_RemovesProduct()
         {
-            var product = new Product { Id = 1, Name = "Test", Description = "Test Description" };
+            var product = new Product { Id = 1, Name = "Test", Price = 10.0, Description = "Test Description" };
             _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(product);
 
             var result = await _service.DeleteProductAsync(1);

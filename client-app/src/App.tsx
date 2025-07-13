@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useMsal, useIsAuthenticated } from "@azure/msal-react";
 import { loginRequest } from "./authConfig";
 import { fetchProducts, addProduct, updateProduct, deleteProduct } from "./services/productService";
+import ProductViewModal from "./ProductViewModal"; 
 
 interface Product {
     id: number;
     name: string;
+    price: number;
     description: string;
 }
 
@@ -14,7 +16,8 @@ function App() {
     const isAuthenticated = useIsAuthenticated();
     const [products, setProducts] = useState<Product[]>([]);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-    const [newProduct, setNewProduct] = useState({ name: "", description: "" });
+    const [newProduct, setNewProduct] = useState({ name: "", price: 0, description: "" });
+    const [viewingProduct, setViewingProduct] = useState<Product | null>(null); 
 
     // Fetch products on load
     useEffect(() => {
@@ -87,7 +90,7 @@ function App() {
         try {
             const added = await addProduct(instance, account, newProduct);
             setProducts([...products, added]);
-            setNewProduct({ name: "", description: "" });
+            setNewProduct({ name: "", price: 0, description: "" });
         } catch (err) {
             console.error("Add failed:", err);
         }
@@ -106,7 +109,15 @@ function App() {
                     placeholder="Name"
                     value={newProduct.name}
                     onChange={handleAddChange}
-                    className="border p-2 mr-2 rounded w-1/3"
+                    className="border p-2 mr-2 rounded w-1/4"
+                />
+                <input
+                    type="text"
+                    name="price"
+                    placeholder="Price"
+                    value={newProduct.price}
+                    onChange={handleAddChange}
+                    className="border p-2 mr-2 rounded w-1/4"
                 />
                 <input
                     type="text"
@@ -114,7 +125,7 @@ function App() {
                     placeholder="Description"
                     value={newProduct.description}
                     onChange={handleAddChange}
-                    className="border p-2 mr-2 rounded w-1/2"
+                    className="border p-2 mr-2 rounded w-1/3"
                 />
                 <button onClick={handleAddProduct} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                     Add
@@ -127,6 +138,7 @@ function App() {
                     <tr>
                         <th className="border border-gray-300 px-4 py-2 text-left">ID</th>
                         <th className="border border-gray-300 px-4 py-2 text-left">Name</th>
+                        <th className="border border-gray-300 px-4 py-2 text-left">Price</th>
                         <th className="border border-gray-300 px-4 py-2 text-left">Description</th>
                         <th className="border border-gray-300 px-4 py-2">Actions</th>
                     </tr>
@@ -135,7 +147,7 @@ function App() {
                     {products.map(p => (
                         <tr key={p.id} className="hover:bg-gray-100">
                             <td className="border border-gray-300 px-4 py-2">{p.id}</td>
-                            <td className="border border-gray-300 px-4 py-2">
+                            <td className="border border-gray-300 px-4 py-2 w-1/6">
                                 {editingProduct?.id === p.id ? (
                                     <input
                                         name="name"
@@ -147,7 +159,19 @@ function App() {
                                     p.name
                                 )}
                             </td>
-                            <td className="border border-gray-300 px-4 py-2">
+                            <td className="border border-gray-300 px-4 py-2 w-1/6">
+                                {editingProduct?.id === p.id ? (
+                                    <input
+                                        name="price"
+                                        value={editingProduct.price}
+                                        onChange={handleEditChange}
+                                        className="border rounded p-1 w-full"
+                                    />
+                                ) : (
+                                    p.price
+                                )}
+                            </td>
+                            <td className="border border-gray-300 px-4 py-2 w-1/6">
                                 {editingProduct?.id === p.id ? (
                                     <input
                                         name="description"
@@ -178,6 +202,12 @@ function App() {
                                 ) : (
                                     <>
                                         <button
+                                            onClick={() => setViewingProduct(p)}
+                                            className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                                        >
+                                            View
+                                        </button>
+                                        <button
                                             onClick={() => setEditingProduct(p)}
                                             className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
                                         >
@@ -196,7 +226,14 @@ function App() {
                     ))}
                 </tbody>
             </table>
+            {viewingProduct && (
+                <ProductViewModal
+                    product={viewingProduct}
+                    onClose={() => setViewingProduct(null)}
+                />
+            )}
         </div>
+
     );
 }
 
