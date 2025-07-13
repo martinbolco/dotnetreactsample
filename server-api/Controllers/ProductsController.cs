@@ -52,7 +52,7 @@ namespace server_api.Controllers
 
 		// PUT: api/products/5
 		[HttpPut("{id}")]
-		public async Task<IActionResult> UpdateProduct(int id, Product updatedProduct)
+		public async Task<ActionResult<Product>> UpdateProduct(int id, Product updatedProduct)
 		{
 			if (id != updatedProduct.Id)
 			{
