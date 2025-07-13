@@ -2,9 +2,9 @@
 
 namespace server_api.Data
 {
-	public interface IUnitOfWork : IDisposable
+	public interface IUnitOfWork<T> : IDisposable where T : class
 	{
-		IProductRepository Products { get; }
+		IGenericRepository<T> Repository { get; }
 		Task<int> CompleteAsync(); // commits changes
 	}
 }

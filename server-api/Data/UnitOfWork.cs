@@ -2,15 +2,15 @@
 
 namespace server_api.Data
 {
-	public class UnitOfWork : IUnitOfWork
+	public class UnitOfWork<T> : IUnitOfWork<T> where T : class
 	{
 		private readonly AppDbContext _context;
-		public IProductRepository Products { get; }
+		public IGenericRepository<T> Repository { get; }
 
 		public UnitOfWork(AppDbContext context)
 		{
 			_context = context;
-			Products = new ProductRepository(_context);
+			Repository = new GenericRepository<T>(_context);
 		}
 
 		public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();
