@@ -6,7 +6,7 @@
         <Configuration>
           <ExcludeByFile>**/Program.cs</ExcludeByFile>
           <Exclude>
-            <Namespace>server_api.Migrations</Namespace>
+            <Namespace>*Migrations*</Namespace>
           </Exclude>
         </Configuration>
       </DataCollector>
