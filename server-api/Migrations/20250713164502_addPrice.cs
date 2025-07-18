@@ -7,7 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 namespace server_api.Migrations
 {
 	/// <inheritdoc />
-	[ExcludeFromCodeCoverage]
 	public partial class addPrice : Migration
     {
         /// <inheritdoc />

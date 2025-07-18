@@ -5,6 +5,9 @@
       <DataCollector friendlyName="XPlat Code Coverage">
         <Configuration>
           <ExcludeByFile>**/Program.cs</ExcludeByFile>
+          <Exclude>
+            <Namespace>server_api.Migrations.*</Namespace>
+          </Exclude>
         </Configuration>
       </DataCollector>
     </DataCollectors>

@@ -12,7 +12,6 @@ using System.Diagnostics.CodeAnalysis;
 namespace server_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-	[ExcludeFromCodeCoverage]
 	partial class AppDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
