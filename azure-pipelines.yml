@@ -78,12 +78,22 @@ stages:
         restoreSolution: '**/*.sln'
 
     - task: DotNetCoreCLI@2
-      displayName: Run Unit Tests
+      displayName: 'Run Unit Tests with Coverage'
       inputs:
         command: 'test'
         projects: '**/*Tests.csproj'
-        arguments: '--configuration $(configuration) --verbosity detailed'
+        arguments: >
+          --configuration $(configuration)
+          /p:CollectCoverage=true
+          /p:CoverletOutputFormat=cobertura
+          /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/coverage.cobertura.xml
         publishTestResults: true
+
+    - task: PublishCodeCoverageResults@1
+      displayName: 'Publish Code Coverage Results'
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(Build.SourcesDirectory)/TestResults/coverage.cobertura.xml'
 
     - task: DotNetCoreCLI@2
       inputs:
