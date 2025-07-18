@@ -84,16 +84,16 @@ stages:
         projects: '**/*Tests.csproj'
         arguments: >
           --configuration $(configuration)
-          /p:CollectCoverage=true
-          /p:CoverletOutputFormat=cobertura
-          /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/coverage.cobertura.xml
+          --collect:"XPlat Code Coverage"
         publishTestResults: true
+
 
     - task: PublishCodeCoverageResults@2
       displayName: 'Publish Code Coverage Results'
       inputs:
         codeCoverageTool: 'cobertura'
-        summaryFileLocation: '$(Build.SourcesDirectory)/TestResults/coverage.cobertura.xml'
+        summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+
 
     - task: DotNetCoreCLI@2
       inputs:
