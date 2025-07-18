@@ -1,11 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System.Diagnostics.CodeAnalysis;
+
 
 #nullable disable
 
 namespace server_api.Migrations
 {
-    /// <inheritdoc />
-    public partial class addDescription : Migration
+	/// <inheritdoc />
+	[ExcludeFromCodeCoverage]
+	public partial class addDescription : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
