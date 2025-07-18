@@ -83,5 +83,52 @@ namespace server_api.Tests
 
 			Assert.IsType<NoContentResult>(result);
 		}
+
+		[Fact]
+		public async Task GetProduct_ReturnsOkResult_WithProduct()
+		{
+			var product = new Product { Id = 1, Name = "Test", Description = "desc", Price = 10 };
+			_productServiceMock.Setup(s => s.GetProductAsync(1)).ReturnsAsync(product);
+
+			var result = await _controller.GetProduct(1);
+
+			var okResult = Assert.IsType<OkObjectResult>(result.Result);
+			var returnProduct = Assert.IsType<Product>(okResult.Value);
+			Assert.Equal(1, returnProduct.Id);
+		}
+
+		[Fact]
+		public async Task UpdateProduct_ReturnsOk_WhenUpdateSucceeds()
+		{
+			var updatedProduct = new Product { Id = 1, Name = "Updated", Description = "desc", Price = 10 };
+			_productServiceMock.Setup(s => s.UpdateProductAsync(1, updatedProduct)).ReturnsAsync(true);
+
+			var result = await _controller.UpdateProduct(1, updatedProduct);
+
+			var okResult = Assert.IsType<OkObjectResult>(result.Result);
+			var returnProduct = Assert.IsType<Product>(okResult.Value);
+			Assert.Equal(1, returnProduct.Id);
+		}
+
+		[Fact]
+		public async Task UpdateProduct_ReturnsNotFound_WhenUpdateFails()
+		{
+			var updatedProduct = new Product { Id = 1, Name = "Updated", Description = "desc", Price = 10 };
+			_productServiceMock.Setup(s => s.UpdateProductAsync(1, updatedProduct)).ReturnsAsync(false);
+
+			var result = await _controller.UpdateProduct(1, updatedProduct);
+
+			Assert.IsType<NotFoundResult>(result.Result);
+		}
+
+		[Fact]
+		public async Task DeleteProduct_ReturnsNotFound_WhenDeleteFails()
+		{
+			_productServiceMock.Setup(s => s.DeleteProductAsync(1)).ReturnsAsync(false);
+
+			var result = await _controller.DeleteProduct(1);
+
+			Assert.IsType<NotFoundResult>(result);
+		}
 	}
 }
