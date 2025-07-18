@@ -85,6 +85,7 @@ stages:
         arguments: >
           --configuration $(configuration)
           --collect:"XPlat Code Coverage"
+          --settings coverlet.runsettings
         publishTestResults: true
 
 
