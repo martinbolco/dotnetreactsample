@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RunSettings>
-  <DataCollectionRunSettings>
-    <DataCollectors>
-      <DataCollector friendlyName="XPlat Code Coverage">
-        <Configuration>
-          <ExcludeByFile>**/Program.cs</ExcludeByFile>
-          <Exclude>
-            <Namespace>*Migrations*</Namespace>
-          </Exclude>
-        </Configuration>
-      </DataCollector>
-    </DataCollectors>
-  </DataCollectionRunSettings>
+	<DataCollectionRunSettings>
+		<DataCollectors>
+			<DataCollector friendlyName="XPlat Code Coverage">
+				<Configuration>
+					<ExcludeByFile>**/Program.cs</ExcludeByFile>
+					<ExcludeByFile>**/Migrations/*.cs</ExcludeByFile>
+					<Exclude>
+						<Class>*Migrations*</Class>
+					</Exclude>
+				</Configuration>
+			</DataCollector>
+		</DataCollectors>
+	</DataCollectionRunSettings>
 </RunSettings>
